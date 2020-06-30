@@ -1,123 +1,356 @@
-Pete - go to this page: 
+PETE - using the blog post below as the basis for my actions, here is how I got the deployment
+of this already exising React App (which already had a github repository) to GitHub pages to work.
 
-https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f 
+These blog posts are also interesting / useful.
 
-AND IF THE ABOVE DOESN'T HELP (DON'T FORGET THE FURTHER LINK IN THE COMMENTS) THEN TRY THIS PAGE BELOW: 
+https://www.freecodecamp.org/news/surge-vs-github-pages-deploying-a-create-react-app-project-c0ecbf317089/
+https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48
 
-https://reactjs.org/docs/create-a-new-react-app.html
+Gh-pages deployment problems with react-router
+https://github.com/facebook/create-react-app/issues/1765
+The homepage setting only affects paths to JS and CSS in the produced HTML. It can’t affect your routing configuration.
 
-AND DONT FORGET AI-LYN TANG IS ALWAYS HELPFUL :
+path='/' in your router configuration means you’re literally matching /. Only https://rockchalkwushock.github.io/ would match /.
 
-https://code.likeagirl.io/how-to-use-react-outside-of-codepen-98be57b256e6
+But your project is on /rcws-development/. However if you change the routing configuration 
+to say /rcws-development/ then this won’t work in development on 
+npm start because the development server serves from /.
 
-SOME OTHER FURTHER INFORMATION IS HERE: 
+Two solutions:
 
-https://create-react-app.dev/docs/deployment/ And scroll down to the bit on "GitHub Pages"
+Don’t use HTML5 history on GitHub pages. Use hashHistory instead. Your URLs will look like 
+https://rockchalkwushock.github.io/rcws-development/#path/inside/the/app.
 
-#
-GitHub Pages
+Use process.env.PUBLIC_URL in your route definitions so that they work both in development 
+and after deployment. For example: <Route path={process.env.PUBLIC_URL + '/'}>. This will be 
+empty in development and rcws-development (inferred from homepage) in production.
 
-    Note: this feature is available with react-scripts@0.2.0 and higher.
+In the future, we might flip the development server to also take homepage into account (#1582). 
+If this happens, your project would get served at localhost:3000/rcws-development even locally so 
+you'd bump into this issue earlier (and would have to use process.env.PUBLIC_URL in route definitions 
+anyway). But we have not really decided on this yet.
 
-#
-Step 1: Add homepage to package.json
+Hope this helps!
 
-The step below is important!
 
-If you skip it, your app will not deploy correctly.
+https://dev.to/caffiendkitten/react-router-with-github-pages-en3
 
-Open your package.json and add a homepage field for your project:
+https://github.community/t/my-react-project-doesnt-work-on-github-pages/10350/6
 
-"homepage": "https://myusername.github.io/my-app",
 
-or for a GitHub user page:
 
-"homepage": "https://myusername.github.io",
+###################################################################################
+1- We need to install GitHub Pages package as a dev-dependency.
 
-or for a custom domain page: 
+I used "npm i gh-pages" as per https://www.npmjs.com/package/gh-pages
 
-"homepage": "https://mywebsite.com",
+As a result I see a change in package.json (which is a good sign)
 
-Create React App uses the homepage field to determine the root URL in the built HTML file.
-#
-Step 2: Install gh-pages and add deploy to scripts in package.json
+C:\Users\Pete>cd C:\Users\Pete\Documents\ReactApps\react-ed-psychologist
 
-Now, whenever you run npm run build, you will see a cheat sheet with instructions on how to deploy to GitHub Pages.
+C:\Users\Pete\Documents\ReactApps\react-ed-psychologist>npm i gh-pages
+npm WARN slick-carousel@1.8.1 requires a peer of jquery@>=1.8.0 but none is installed. You must install peer dependencies yourself.
+npm WARN tsutils@3.17.1 requires a peer of typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta but none is installed. You must install peer dependencies yourself.
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@2.1.2 (node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.1.2: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.13 (node_modules\jest-haste-map\node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.13 (node_modules\watchpack-chokidar2\node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.13 (node_modules\webpack-dev-server\node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
 
-To publish it at https://myusername.github.io/my-app, run:
++ gh-pages@3.1.0
+added 20 packages from 3 contributors and audited 1745 packages in 28.707s
 
-npm install --save gh-pages
+58 packages are looking for funding
+  run `npm fund` for details
 
-Alternatively you may use yarn:
+found 1 low severity vulnerability
+  run `npm audit fix` to fix them, or `npm audit` for details
 
-yarn add gh-pages
+###################################################################################
+2- Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
+click on "source", and select "master branch" from the drop down.
 
-Add the following scripts in your package.json:
+This will result in the appearance of message : 
+
+"Your site is ready to be published at https://peter-lancaster.github.io/ed-psychologist/."
+
+https://peter-lancaster.github.io/ed-psychologist/
+
+###################################################################################
+3- Add properties to package.json file.
+
+The first property we need to add at the top level homepage we will define this as a string and the value 
+will be "http://{username}.github.io/{repo-name}" {username} is your GitHub username, and {repo-name} is the name 
+of the GitHub repository you created it will look like this :
+
+"homepage": "http://yuribenjamin.github.io/my-app"
+
+
+Second in the existing scripts property we to need to add predeploy and deploy.
 
 "scripts": {
-+   "predeploy": "npm run build",
-+   "deploy": "gh-pages -d build",
+//...
+"predeploy": "npm run build",
+"deploy": "gh-pages -d build"
+}
+
+So my package.json now looks like this: 
+
+{
+  "homepage" : "https://peter-lancaster.github.io/ed-psychologist/",
+  "name": "ed-psychologist",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "formik": "^2.1.4",
+    "gh-pages": "^3.1.0",
+    "react": "^16.13.1",
+    "react-burger-menu": "^2.6.17",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-slick": "^0.26.1",
+    "remixicon": "^2.5.0",
+    "slick-carousel": "^1.8.1",
+    "yup": "^0.29.1"
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
 
-The predeploy script will run automatically before deploy is run.
+###################################################################################
+4- Now deploy it to GitHub Pages.
 
-If you are deploying to a GitHub user page instead of a project page you'll need to make one additional modification:
-
-    Tweak your package.json scripts to push deployments to master:
-
-"scripts": {
-    "predeploy": "npm run build",
--   "deploy": "gh-pages -d build",
-+   "deploy": "gh-pages -b master -d build",
-
-#
-Step 3: Deploy the site by running npm run deploy
-
-Then run:
+Run the following command against your app:
 
 npm run deploy
 
-#
-Step 4: For a project page, ensure your project’s settings use gh-pages
+this command will create a branch named gh-pages this branch host your app, 
+and homepage property you created in package.json file.
 
-Finally, make sure GitHub Pages option in your GitHub project settings is set to use the gh-pages branch:
-gh-pages branch setting
-#
-Step 5: Optionally, configure the domain
+Pete - Note that by adding the following lines into "package.json": 
 
-You can configure a custom domain with GitHub Pages by adding a CNAME file to the public/ folder.
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
 
-Your CNAME file should look like this:
+...you've changed the process for doing a production build of an app, so that
+instead of using the command "npm run build" you now use the command "npm run deploy".
 
-mywebsite.com
+"npm run deploy" does some extra gh-pages related steps, AND THEN does everything
+that would be involved in a usual "npm run build" (I think!?!)
 
-#
-Notes on client-side routing
+The following is what you see in the command prompt box as a result of "npm run deploy": 
 
-GitHub Pages doesn’t support routers that use the HTML5 pushState history API under the hood (for example, React Router using browserHistory). This is because when there is a fresh page load for a url like http://user.github.io/todomvc/todos/42, where /todos/42 is a frontend route, the GitHub Pages server returns 404 because it knows nothing of /todos/42. If you want to add a router to a project hosted on GitHub Pages, here are a couple of solutions:
+Microsoft Windows [Version 10.0.18362.900]
+(c) 2019 Microsoft Corporation. All rights reserved.
 
-    You could switch from using HTML5 history API to routing with hashes. If you use React Router, you can switch to hashHistory for this effect, but the URL will be longer and more verbose (for example, http://user.github.io/todomvc/#/todos/42?_k=yknaj). Read more about different history implementations in React Router.
-    Alternatively, you can use a trick to teach GitHub Pages to handle 404s by redirecting to your index.html page with a custom redirect parameter. You would need to add a 404.html file with the redirection code to the build folder before deploying your project, and you’ll need to add code handling the redirect parameter to index.html. You can find a detailed explanation of this technique in this guide.
+C:\Users\Pete\Documents\ReactApps\react-ed-psychologist>npm run deploy
 
-#
-Troubleshooting
-#
-"/dev/tty: No such a device or address"
+> ed-psychologist@0.1.0 predeploy C:\Users\Pete\Documents\ReactApps\react-ed-psychologist
+> npm run build
 
-If, when deploying, you get /dev/tty: No such a device or address or a similar error, try the following:
+> ed-psychologist@0.1.0 build C:\Users\Pete\Documents\ReactApps\react-ed-psychologist
+> react-scripts build
 
-    Create a new Personal Access Token
-    git remote set-url origin https://<user>:<token>@github.com/<user>/<repo> .
-    Try npm run deploy again
+Creating an optimized production build...
+Compiled with warnings.
 
-#
-"Cannot read property 'email' of null"
+./src/ContextProvider.js
+  Line 24:40:  React Hook useEffect has a missing dependency: 'whichNavigation'. Either include 
+  it or remove the dependency array  react-hooks/exhaustive-deps
 
-If, when deploying, you get Cannot read property 'email' of null, try the following:
+./src/components/ContactFormik.js
+  Line 2:20:  'Formik' is defined but never used        no-unused-vars
+  Line 2:28:  'Field' is defined but never used         no-unused-vars
+  Line 2:35:  'Form' is defined but never used          no-unused-vars
+  Line 2:41:  'ErrorMessage' is defined but never used  no-unused-vars
+  Line 3:13:  'Yup' is defined but never used           no-unused-vars
 
-    git config --global user.name '<your_name>'
-    git config --global user.email '<your_email>'
-    Try npm run deploy again
+./src/components/HomePageCarousel.js
+  Line 6:8:  'LeftArrow' is defined but never used  no-unused-vars
 
-#
+./src/components/CarouselItem.js
+  Line 7:13:  img elements must have an alt prop, either with meaningful text, or an empty 
+  string for decorative images  jsx-a11y/alt-text
+
+./src/Header.js
+  Line 9:12:  'isBurgerNav' is assigned a value but never used  no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+File sizes after gzip:
+
+  122.18 KB  build\static\js\2.a577d916.chunk.js
+  18.98 KB   build\static\css\2.00b5ec64.chunk.css
+  2.68 KB    build\static\js\main.77ded4ee.chunk.js
+  1.45 KB    build\static\css\main.f9718c59.chunk.css
+  787 B      build\static\js\runtime-main.c8ac3576.js
+
+The project was built assuming it is hosted at /ed-psychologist/.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+> ed-psychologist@0.1.0 deploy C:\Users\Pete\Documents\ReactApps\react-ed-psychologist
+> gh-pages -d build
+
+Published
+
+C:\Users\Pete\Documents\ReactApps\react-ed-psychologist>
+
+
+###################################################################################
+5- Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
+click on "source", and select "gh-pages branch" from the drop down.
+
+If "gh-pages branch" is not present in the drop-down, refresh the page ("gh-pages branch" 
+should then appear in the drop-down list).
+
+
+###################################################################################
+###################################################################################
+###################################################################################
+###################################################################################
+###################################################################################
+###################################################################################
+###################################################################################
+
+
+
+https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f
+
+How to deploy React App to GitHub Pages
+#javascript #react #github #webdev
+yuribenjamin profile image
+Ibrahim Ragab
+Jun 23 '19 Updated on Apr 06, 2020 ・2 min read
+
+Did you build React app and want to deploy it, following these simple steps you able to deploy and showing the world your amazing app.
+
+I will show how to create and deploy React App using create-react-app and GitHub Pages
+
+Prerequisites :
+
+GitHub Account.
+
+Install Git in your machine and Set up Git.
+
+Make sure you have Node.js and Npm installed in your machine.
+
+Install Node.js
+
+Install Npm
+
+Notice You’ll need to have Node 8.10.0 or later on your local machine.
+
+Procedure :
+
+####################################################################################
+
+1- First create a repository named my-app using create-react-app.
+
+npm init react-app my-app
+
+2- We need to install GitHub Pages package as a dev-dependency.
+
+cd my-app
+npm install gh-pages --save-dev
+
+3- Add properties to package.json file.
+
+The first property we need to add at the top level homepage second we will define this as a string and the value 
+will be "http://{username}.github.io/{repo-name}" {username} is your GitHub username, and {repo-name} is the name 
+of the GitHub repository you created it will look like this :
+
+"homepage": "http://yuribenjamin.github.io/my-app"
+
+Second in the existing scripts property we to need to add predeploy and deploy.
+
+"scripts": {
+//...
+"predeploy": "npm run build",
+"deploy": "gh-pages -d build"
+}
+
+package.json example
+
+4- Create a Github repository and initialize it and add it as a remote in your local git repository.
+
+Now, create a remote GitHub repository with your app name and go back initialize this
+git init
+add it as remote
+git remote add origin git@github.com:Yuribenjamin/my-app.git
+
+5- Now deploy it to GitHub Pages.
+
+just run the following command :
+
+npm run deploy
+
+successful build
+
+this command will create a branch named gh-pages this branch host your app, and homepage property you created 
+in package.json file hold your link for a live preview, or you can open the branch setting scroll down to GitHub Pages section you will find this:
+Your site is puplished
+
+Visit deployed app
+
+6- commit and push your commit to GitHub. Optionally
+
+git add .
+git commit -m "Your awesome message"
+git push origin master
+
+Recap
+
+We created React App using create-react-app
+then we installed gh-pages as a dev-dependency
+and in package.json file we added some properties homepage also in existing scripts property we added predeploy and deploy
+and created a remote repository and initialize it
+and run npm run deploy to generate a production build and deploy it to GitHub Pages.
+
+if you have any questions, please don't hesitate to ask.
+Always happy to hear from you
+
+
+
+How to deploy React App to GitHub Pages
+Ibrahim Ragab on June 23, 2019
+Did you build React app and want to deploy it, following these simple steps you able to deploy and showing the world your amazing app. I will ... [Read Full]
+Add to the discussion
+markdown guideupload image
+PREVIEW 
