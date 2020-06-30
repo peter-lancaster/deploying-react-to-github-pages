@@ -1,0 +1,17 @@
+1) STANDARD COMMIT PROCESS IS AS FOLLOWS:
+
+i) To list all remote repositories that are currently connected to your local repository
+$ git remote -v
+
+ii) To check status 
+$ git status
+
+iii) To add a change in the working directory to the staging area: 
+$ git add .
+
+iv) To save changes to the local repository (Using the "git commit" command only saves a new commit object in the local Git repository.)
+$git commit -m"message here about what's in this commit"
+
+v) To upload local repository content to a remote repository:
+$git push origin master
+
