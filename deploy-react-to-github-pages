@@ -205,7 +205,8 @@ should then appear in the drop-down list).
 
 ###################################################################################
 
-6 - Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
+6 - Don't forget that every time you make a change to your repository, and want that reflected in gh-pages,
+you will need to "npm run build" and THEN "npm run deploy".
 
 ###################################################################################
 
