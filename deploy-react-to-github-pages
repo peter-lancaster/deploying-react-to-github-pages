@@ -1,46 +1,14 @@
-PETE - using the blog post below as the basis for my actions, here is how I got the deployment
-of this already exising React App (which already had a github repository) to GitHub pages to work.
+HOW TO DEPLOY YOUR REACT APP TO GITHUB PAGES.
 
-These blog posts are also interesting / useful.
+PETE - using this blog post
 
-https://www.freecodecamp.org/news/surge-vs-github-pages-deploying-a-create-react-app-project-c0ecbf317089/
-https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48
+https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f
 
-Gh-pages deployment problems with react-router
-https://github.com/facebook/create-react-app/issues/1765
-The homepage setting only affects paths to JS and CSS in the produced HTML. It can’t affect your routing configuration.
-
-path='/' in your router configuration means you’re literally matching /. Only https://rockchalkwushock.github.io/ would match /.
-
-But your project is on /rcws-development/. However if you change the routing configuration 
-to say /rcws-development/ then this won’t work in development on 
-npm start because the development server serves from /.
-
-Two solutions:
-
-Don’t use HTML5 history on GitHub pages. Use hashHistory instead. Your URLs will look like 
-https://rockchalkwushock.github.io/rcws-development/#path/inside/the/app.
-
-Use process.env.PUBLIC_URL in your route definitions so that they work both in development 
-and after deployment. For example: <Route path={process.env.PUBLIC_URL + '/'}>. This will be 
-empty in development and rcws-development (inferred from homepage) in production.
-
-In the future, we might flip the development server to also take homepage into account (#1582). 
-If this happens, your project would get served at localhost:3000/rcws-development even locally so 
-you'd bump into this issue earlier (and would have to use process.env.PUBLIC_URL in route definitions 
-anyway). But we have not really decided on this yet.
-
-Hope this helps!
-
-
-https://dev.to/caffiendkitten/react-router-with-github-pages-en3
-
-https://github.community/t/my-react-project-doesnt-work-on-github-pages/10350/6
-
-
+as the basis for my actions, here is how I got the deployment of this already exising 
+React App (which already had a github repository) to GitHub pages to work.
 
 ###################################################################################
-1- We need to install GitHub Pages package as a dev-dependency.
+1- Install GitHub Pages package as a dev-dependency.
 
 I used "npm i gh-pages" as per https://www.npmjs.com/package/gh-pages
 
@@ -73,7 +41,7 @@ found 1 low severity vulnerability
 2- Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
 click on "source", and select "master branch" from the drop down.
 
-This will result in the appearance of message : 
+This will result in the appearance of message on the settings page: 
 
 "Your site is ready to be published at https://peter-lancaster.github.io/ed-psychologist/."
 
@@ -86,9 +54,6 @@ The first property we need to add at the top level homepage we will define this 
 will be "http://{username}.github.io/{repo-name}" {username} is your GitHub username, and {repo-name} is the name 
 of the GitHub repository you created it will look like this :
 
-"homepage": "http://yuribenjamin.github.io/my-app"
-
-
 Second in the existing scripts property we to need to add predeploy and deploy.
 
 "scripts": {
@@ -100,7 +65,7 @@ Second in the existing scripts property we to need to add predeploy and deploy.
 So my package.json now looks like this: 
 
 {
-  "homepage" : "https://peter-lancaster.github.io/ed-psychologist/",
+  "homepage": "https://peter-lancaster.github.io/react-ed-psychologist/",
   "name": "ed-psychologist",
   "version": "0.1.0",
   "private": true,
@@ -147,8 +112,17 @@ So my package.json now looks like this:
   }
 }
 
+To be clear, the bits I've added to get this working are : 
+
+i) "homepage": "https://peter-lancaster.github.io/react-ed-psychologist/",
+
+ii) Within the "scripts" object : 
+
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+
 ###################################################################################
-4- Now deploy it to GitHub Pages.
+4- Deploy it to GitHub Pages.
 
 Run the following command against your app:
 
@@ -156,17 +130,6 @@ npm run deploy
 
 this command will create a branch named gh-pages this branch host your app, 
 and homepage property you created in package.json file.
-
-Pete - Note that by adding the following lines into "package.json": 
-
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-
-...you've changed the process for doing a production build of an app, so that
-instead of using the command "npm run build" you now use the command "npm run deploy".
-
-"npm run deploy" does some extra gh-pages related steps, AND THEN does everything
-that would be involved in a usual "npm run build" (I think!?!)
 
 The following is what you see in the command prompt box as a result of "npm run deploy": 
 
@@ -232,14 +195,21 @@ Published
 
 C:\Users\Pete\Documents\ReactApps\react-ed-psychologist>
 
-
 ###################################################################################
-5- Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
+
+5 - Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
 click on "source", and select "gh-pages branch" from the drop down.
 
 If "gh-pages branch" is not present in the drop-down, refresh the page ("gh-pages branch" 
 should then appear in the drop-down list).
 
+###################################################################################
+
+6 - Go to the relevant repository, go into it's settings, scroll down to the "GitHub Pages" bit, 
+
+###################################################################################
+
+Reference for the above approach: https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f
 
 ###################################################################################
 ###################################################################################
@@ -247,110 +217,61 @@ should then appear in the drop-down list).
 ###################################################################################
 ###################################################################################
 ###################################################################################
+
+However, the above approach to using github pages leaves us with a few problems: 
+
+PROBLEM 1) When we go to https://peter-lancaster.github.io/react-ed-psychologist/ we see that the header and footer
+are present, but the parts of the page that depend on react-router are not. When we click on a link that uses react-router
+it sends us to https://peter-lancaster.github.io and only then do we see the website appear as we hoped / expected. 
+
+SOLUTION 1) Problem 1 above is related to the way that github pages doesn't deal very well with react-router. We are losing 
+the /react-ed-psychologist/ part of our URL, and ending up with only "https://peter-lancaster.github.io". A solution can be
+found in these blog posts: 
+
+
+
+
 ###################################################################################
 
 
+PROBLEM 2) When we click on any <a> links within the website that do not use react-router, we get a 404 page.
 
-https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f
-
-How to deploy React App to GitHub Pages
-#javascript #react #github #webdev
-yuribenjamin profile image
-Ibrahim Ragab
-Jun 23 '19 Updated on Apr 06, 2020 ・2 min read
-
-Did you build React app and want to deploy it, following these simple steps you able to deploy and showing the world your amazing app.
-
-I will show how to create and deploy React App using create-react-app and GitHub Pages
-
-Prerequisites :
-
-GitHub Account.
-
-Install Git in your machine and Set up Git.
-
-Make sure you have Node.js and Npm installed in your machine.
-
-Install Node.js
-
-Install Npm
-
-Notice You’ll need to have Node 8.10.0 or later on your local machine.
-
-Procedure :
-
-####################################################################################
-
-1- First create a repository named my-app using create-react-app.
-
-npm init react-app my-app
-
-2- We need to install GitHub Pages package as a dev-dependency.
-
-cd my-app
-npm install gh-pages --save-dev
-
-3- Add properties to package.json file.
-
-The first property we need to add at the top level homepage second we will define this as a string and the value 
-will be "http://{username}.github.io/{repo-name}" {username} is your GitHub username, and {repo-name} is the name 
-of the GitHub repository you created it will look like this :
-
-"homepage": "http://yuribenjamin.github.io/my-app"
-
-Second in the existing scripts property we to need to add predeploy and deploy.
-
-"scripts": {
-//...
-"predeploy": "npm run build",
-"deploy": "gh-pages -d build"
-}
-
-package.json example
-
-4- Create a Github repository and initialize it and add it as a remote in your local git repository.
-
-Now, create a remote GitHub repository with your app name and go back initialize this
-git init
-add it as remote
-git remote add origin git@github.com:Yuribenjamin/my-app.git
-
-5- Now deploy it to GitHub Pages.
-
-just run the following command :
-
-npm run deploy
-
-successful build
-
-this command will create a branch named gh-pages this branch host your app, and homepage property you created 
-in package.json file hold your link for a live preview, or you can open the branch setting scroll down to GitHub Pages section you will find this:
-Your site is puplished
-
-Visit deployed app
-
-6- commit and push your commit to GitHub. Optionally
-
-git add .
-git commit -m "Your awesome message"
-git push origin master
-
-Recap
-
-We created React App using create-react-app
-then we installed gh-pages as a dev-dependency
-and in package.json file we added some properties homepage also in existing scripts property we added predeploy and deploy
-and created a remote repository and initialize it
-and run npm run deploy to generate a production build and deploy it to GitHub Pages.
-
-if you have any questions, please don't hesitate to ask.
-Always happy to hear from you
+PROBLEM 3) When we click on any <a> links within the website that do not use react-router, we get a 404 page.
 
 
+These blog posts are also interesting / useful.
 
-How to deploy React App to GitHub Pages
-Ibrahim Ragab on June 23, 2019
-Did you build React app and want to deploy it, following these simple steps you able to deploy and showing the world your amazing app. I will ... [Read Full]
-Add to the discussion
-markdown guideupload image
-PREVIEW 
+https://www.freecodecamp.org/news/surge-vs-github-pages-deploying-a-create-react-app-project-c0ecbf317089/
+https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48
+
+Gh-pages deployment problems with react-router
+https://github.com/facebook/create-react-app/issues/1765
+The homepage setting only affects paths to JS and CSS in the produced HTML. It can’t affect your routing configuration.
+
+path='/' in your router configuration means you’re literally matching /. Only https://rockchalkwushock.github.io/ would match /.
+
+But your project is on /rcws-development/. However if you change the routing configuration 
+to say /rcws-development/ then this won’t work in development on 
+npm start because the development server serves from /.
+
+Two solutions:
+
+Don’t use HTML5 history on GitHub pages. Use hashHistory instead. Your URLs will look like 
+https://rockchalkwushock.github.io/rcws-development/#path/inside/the/app.
+
+Use process.env.PUBLIC_URL in your route definitions so that they work both in development 
+and after deployment. For example: <Route path={process.env.PUBLIC_URL + '/'}>. This will be 
+empty in development and rcws-development (inferred from homepage) in production.
+
+In the future, we might flip the development server to also take homepage into account (#1582). 
+If this happens, your project would get served at localhost:3000/rcws-development even locally so 
+you'd bump into this issue earlier (and would have to use process.env.PUBLIC_URL in route definitions 
+anyway). But we have not really decided on this yet.
+
+Hope this helps!
+
+
+https://dev.to/caffiendkitten/react-router-with-github-pages-en3
+
+https://github.community/t/my-react-project-doesnt-work-on-github-pages/10350/6
+
