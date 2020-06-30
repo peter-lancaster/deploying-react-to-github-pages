@@ -228,7 +228,81 @@ SOLUTION 1) Problem 1 above is related to the way that github pages doesn't deal
 the /react-ed-psychologist/ part of our URL, and ending up with only "https://peter-lancaster.github.io". A solution can be
 found in these blog posts: 
 
+    https://github.com/facebook/create-react-app/issues/1765
 
+    gaearon commented on Mar 8, 2017 • 
+    The homepage setting only affects paths to JS and CSS in the produced HTML. It can’t affect your 
+    routing configuration.
+
+    path='/' in your router configuration means you’re literally matching /. Only 
+    https://rockchalkwushock.github.io/ would match /.
+
+    But your project is on /rcws-development/. However if you change the routing configuration to say /rcws-development/ 
+    then this won’t work in development on npm start because the development server serves from /.
+
+    Use process.env.PUBLIC_URL in your route definitions so that they work both in development 
+    and after deployment. For example: <Route path={process.env.PUBLIC_URL + '/'}>. This will be 
+    empty in development and rcws-development (inferred from homepage) in production.
+
+So in my particular example, my understanding is that this solution would involve changing 
+my Routing from this: 
+
+            <main>
+              <Switch>
+                <Route exact path ="/"><Home/></Route>
+                <Route path ="/about"><About/></Route>
+                <Route path ="/services"><Services/></Route>
+                <Route path ="/contact-homegrown"><ContactHomeGrown/></Route>
+                <Route path ="/contact-formik"><ContactFormik/></Route>
+              </Switch>
+            </main>
+
+To this:
+            <main>
+              <Switch>
+                <Route exact path ={process.env.PUBLIC_URL + "/"}><Home/></Route>
+                <Route path ={process.env.PUBLIC_URL + "/about"}><About/></Route>
+                <Route path ={process.env.PUBLIC_URL + "/services"}><Services/></Route>
+                <Route path ={process.env.PUBLIC_URL + "/contact-homegrown"}><ContactHomeGrown/></Route>
+                <Route path ={process.env.PUBLIC_URL + "/contact-formik"}><ContactFormik/></Route>
+              </Switch>
+            </main>
+
+Another suggested neater way to get the same result is mentioned in the same blog entry (and in other places across
+stackoverflow and other locations): 
+
+    I know I am a bit late here but the BrowserRouter has a basename prop that can be used for that: 
+    https://reacttraining.com/react-router/web/api/BrowserRouter/basename-string.
+
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+      {/* routes */}
+    </BrowserRouter>
+    
+So for my example, this would mean changing my index.js file from this: 
+
+    ReactDOM.render(
+      <React.StrictMode>
+        <ContextProvider>
+          <Browser>
+            <App />
+          </Browser>
+        </ContextProvider>
+      </React.StrictMode>,
+      document.getElementById('root')
+    );
+    
+To this: 
+
+    ReactDOM.render(
+      <React.StrictMode>
+        <ContextProvider>
+          <Browser basename={process.env.PUBLIC_URL}>
+            <App />
+          </Browser>
+        </ContextProvider>
+      </React.StrictMode>,
+      document.getElementById('root')
+    );
 
 
 ###################################################################################
