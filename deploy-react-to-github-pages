@@ -310,7 +310,7 @@ To this:
 
 PROBLEM 2) When we click on any <a> links within the website that do not use react-router {Link / Switch / Route }, we get a 404 page.
 
-SOLUTION 2) This problem is actually a symptom of / part of problem 1 above, as we learn in this blog post: 
+SOLUTION 2) This problem is actually a symptom of / part of / problem 1 above, as we learn in this blog post: 
 
 https://stackoverflow.com/questions/46056414/getting-404-for-links-with-create-react-app-deployed-to-github-pages
 
@@ -350,7 +350,7 @@ Here is the explanation.
 PETE - I'm interpreting / understanding the above as follows: 
 
   Github pages is set up to handle the serving up of "traditional" websites, where a click on a link to load
-  another page will result in a request to the server to fetch a page, with a specific URL (including the "/path" which
+  another page will result in a request to the server to fetch a page, based on a specific URL (including the "/path" which
   follows the domain name) which the browser then displays on the screen. 
   
   However, React single page apps / websites do not work in this way. All the CSS/html/JavaScript/JSX etc. detailing 
@@ -360,7 +360,7 @@ PETE - I'm interpreting / understanding the above as follows:
   
   One result of this is; if your React single page app at any point does not use the "react-router-dom" "BrowserRouter" 
   component as part of it's processing of "what to render to the screen based on URL", then the github pages server
-  will receive a request for a page that it doesn't have, and will return a 404 error. 
+  will receive a request for a page URL that it doesn't have, and will return a 404 error. 
   
   The two main ways for this to happen are: 
   
@@ -373,14 +373,25 @@ PETE - I'm interpreting / understanding the above as follows:
   "https://domainname.com/path" combination IS PERFECTLY VALID IF HANDLED BY THE "react-router-dom" "BrowserRouter" 
   COMPONENT. 
   
-  So that's the problem, possible solutions are discussed in the blog post.
-  
-  Solution 1:  If you had control over the server, you can serve index.html for all routes. This is explained in 
-  create react app documentation serving apps with client side routing. 
-  
-  https://create-react-app.dev/docs/deployment/#serving-apps-with-client-side-routing
+So that's the problem, possible solutions are discussed in the blog post.
 
+Solution 1:  If you had control over the server, you can serve index.html for all routes. This is explained in 
+create react app documentation serving apps with client side routing. 
 
+https://create-react-app.dev/docs/deployment/#serving-apps-with-client-side-routing
+
+However, we do not have control over the gh-pages server, which leaves us with solution 2)
+
+Solution 2: As per https://github.com/rafrex/spa-github-pages 
+
+I do not like this solution. My concerns are: 
+
+20% around doing a load of stuff I don't really understand (with the accompanying probability of time-consuming
+mistakes and debugging).
+
+30% bad practices around SEO etc.
+
+50% building a solution that will need to be dismantled to work anywhere other than github pages.
 
 ###################################################################################
 
