@@ -206,7 +206,7 @@ should then appear in the drop-down list).
 ###################################################################################
 
 6 - Don't forget that every time you make a change to your repository, and want that reflected in gh-pages,
-you will need to "npm run build" and THEN "npm run deploy".
+you will need to "npm run build" AND THEN "npm run deploy".
 
 ###################################################################################
 
@@ -221,13 +221,13 @@ Reference for the above approach: https://dev.to/yuribenjamin/how-to-deploy-reac
 
 However, the above approach to using github pages leaves us with a few problems: 
 
-PROBLEM 1) When we go to https://peter-lancaster.github.io/react-ed-psychologist/ we see that the header and footer
+PROBLEM 1) When we go to "https://peter-lancaster.github.io/react-ed-psychologist/" we see that the header and footer
 are present, but the parts of the page that depend on react-router are not. When we click on a link that uses react-router
-it sends us to https://peter-lancaster.github.io and only then do we see the website appear as we hoped / expected. 
+it sends us to "https://peter-lancaster.github.io/WHATEVERPAGE". 
 
 SOLUTION 1) Problem 1 above is related to the way that github pages doesn't deal very well with react-router. We are losing 
 the /react-ed-psychologist/ part of our URL, and ending up with only "https://peter-lancaster.github.io". A solution can be
-found in these blog posts: 
+found in this blog post: 
 
     https://github.com/facebook/create-react-app/issues/1765
 
@@ -308,10 +308,76 @@ To this:
 
 ###################################################################################
 
+PROBLEM 2) When we click on any <a> links within the website that do not use react-router {Link / Switch / Route }, we get a 404 page.
 
-PROBLEM 2) When we click on any <a> links within the website that do not use react-router, we get a 404 page.
+SOLUTION 2) This problem is actually a symptom of / part of problem 1 above, as we learn in this blog post: 
 
-PROBLEM 3) When we click on any <a> links within the website that do not use react-router, we get a 404 page.
+https://stackoverflow.com/questions/46056414/getting-404-for-links-with-create-react-app-deployed-to-github-pages
+
+Here is the crux of the problem, as described by the original poster: 
+
+  "I got 404 when I try to enter a path directly (eg. www.example.com/myproject/account) or if I do
+  browser refresh on a subpage."
+  
+Here is the explanation.
+
+  When you enter a new URL into address bar of the browser or refreshes the page, browser requests server 
+  (in this case GitHub pages server) for that URL. At this point, client side router (react-router) can't 
+  take action as it is not yet loaded for that page. Now server looks for a route that matches /accounts 
+  won't find it (because routing is done on client side) and returns 404.
+
+  Solution
+  If you had control over the server, you can serve index.html for all routes. This is explained in 
+  create react app documentation serving apps with client side routing. As we don't have that 
+  control in case of GitHub pages, We can try these.
+
+  Easy Solution
+
+            Switch from browserHistory to hashHistory With this change, your URLs will go from looking like
+            www.example.com/myproject/account
+            to
+            www.example.com/myproject/#/account
+
+  So it's a bit messy.
+
+  Harder solution
+
+          Get GitHub pages to redirect to index.html on all requests. Basically you have to add a 404.html 
+          in your build directory with code to redirect to index.html. More on how to do that.
+
+          Create React App has documentation around client-side routing in GitHub pages too
+
+PETE - I'm interpreting / understanding the above as follows: 
+
+  Github pages is set up to handle the serving up of "traditional" websites, where a click on a link to load
+  another page will result in a request to the server to fetch a page, with a specific URL (including the "/path" which
+  follows the domain name) which the browser then displays on the screen. 
+  
+  However, React single page apps / websites do not work in this way. All the CSS/html/JavaScript/JSX etc. detailing 
+  the logic for what should be rendered in the browser for a specific "https://domainname.com/path" combination is 
+  gathered in the first initial visit to the server, and the proper rendering to the screen is dependent on doing this
+  via the "react-router-dom" "Browser" component.
+  
+  One result of this is; if your React single page app at any point does not use the "react-router-dom" "BrowserRouter" 
+  component as part of it's processing of "what to render to the screen based on URL", then the github pages server
+  will receive a request for a page that it doesn't have, and will return a 404 error. 
+  
+  The two main ways for this to happen are: 
+  
+  (i) The presence of an anchor <a> link in your React code, looking something like this: 
+  
+      anchorLink={"/react-ed-psychologist/about"}
+      <a href={anchorLink} className="carousel-headings">{textTitle}</a></p>
+  
+  (ii) Typing "https://domainname.com/path" combination into address bar / refreshing page, EVEN IF THE specific 
+  "https://domainname.com/path" combination IS PERFECTLY VALID IF HANDLED BY THE "react-router-dom" "BrowserRouter" 
+  COMPONENT. 
+  
+  So that's the problem, possible solutions are discussed in the blog post.
+
+
+
+###################################################################################
 
 
 These blog posts are also interesting / useful.
@@ -349,4 +415,11 @@ Hope this helps!
 https://dev.to/caffiendkitten/react-router-with-github-pages-en3
 
 https://github.community/t/my-react-project-doesnt-work-on-github-pages/10350/6
+
+
+###################################################################################
+
+LOCATION FOR GITHUB PAGES DEPLOYMENT LIST: 
+
+Github also has a deployment page: https://github.com/<user>/<repo>/deployments that lists the deployments and the time they were deployed.
 
