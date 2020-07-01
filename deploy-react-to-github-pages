@@ -395,6 +395,15 @@ mistakes and debugging).
 
 ###################################################################################
 
+USE NETLIFY TO SOLVE react-router / server 404 error? 
+
+Question 1) Maybe Netlify is the way to go instead? Does Netlify have the same problem with React? 
+
+Answer 1) Same problem exists, although the netlify solution looks simpler to implement: 
+https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file
+
+###################################################################################
+
 
 These blog posts are also interesting / useful.
 
