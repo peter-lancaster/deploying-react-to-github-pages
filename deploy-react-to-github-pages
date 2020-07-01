@@ -374,6 +374,11 @@ PETE - I'm interpreting / understanding the above as follows:
   COMPONENT. 
   
   So that's the problem, possible solutions are discussed in the blog post.
+  
+  Solution 1:  If you had control over the server, you can serve index.html for all routes. This is explained in 
+  create react app documentation serving apps with client side routing. 
+  
+  https://create-react-app.dev/docs/deployment/#serving-apps-with-client-side-routing
 
 
 
