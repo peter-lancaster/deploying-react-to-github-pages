@@ -30,13 +30,52 @@ brackets at the end of the file address)
 
 ========================================================================================================
 ========================================================================================================
-4) TO CHANGE FROM THE CURRENT BRANCH YOU'RE WORKING ON TO WORKING ON A NEW BRANCH
+4) TO CLONE A REPOSITORY
 
+https://stackabuse.com/git-clone-a-repository/
+
+Cloning Repositories
+In order to clone a remote repository you'll want to use the git clone command, which is 
+typically used in this fashion:
+
+$ git clone <repo-url>
+
+This will clone the repository in to your current working directory using as the destination directory 
+the name of the repo. In order to clone it in to a different directory, you can specify one as the 
+second parameter to clone:
+
+$ git clone <repo-url> <directory>
+
+An example of this command for a public GitHub repo would look like the following:
+
+$ git clone git@github.com:scottwrobinson/twentyjs.git twentyjs-clone
+Cloning into 'twentyjs-clone'...
+remote: Enumerating objects: 48, done.
+remote: Total 48 (delta 0), reused 0 (delta 0), pack-reused 48
+Receiving objects: 100% (48/48), 9.35 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (22/22), done.
 
 ========================================================================================================
 ========================================================================================================
+5) TO CHANGE THE REMOTE REPOSITORY (that changes will be "pushed" to). 
 
+If you've successfully cloned a repository onto your machine, and want to change the repository that 
+your subsequent "git pushes" push changes to (to one that you own), then you'll need to change the remote 
+repository.
 
+You will first need to create new repository (I think that the ONLY way to do this is to go into 
+github and click the "create repository" button, I don't think you can do it from git bash command 
+line).
+
+When you've done this, and got the link to your new repository (which will look something like this 
+https://github.com/peter-lancaster/freecodecamp-npm-challenges.git) then use the git remote set-url 
+command followed by the remote name, and the remote’s URL:
+
+$git remote set-url <remote-name> <remote-url>
+
+example:
+
+$git remote set-url origin https://github.com/peter-lancaster/freecodecamp-npm-challenges.git
 
 ========================================================================================================
 ========================================================================================================
