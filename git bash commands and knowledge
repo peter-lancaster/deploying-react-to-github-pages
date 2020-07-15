@@ -1,4 +1,4 @@
-1) YOUR STANDARD BASIC COMMIT PROCESS IS AS FOLLOWS:
+1) YOUR STANDARD BASIC COMMIT PROCESS IS AS FOLLOWS  :
 
 i) To list all remote repositories that are currently connected to your local repository
 $ git remote -v
