@@ -27,6 +27,30 @@ iii) I did not select automatic renewal. This could also be a mistake.
 
 OK. That's done. You can now enter the dashboard and see what you've bought.
 
+iv) Clicking around in NameCheap later on, I see the following: message (within the dashboard):
+"You have 15 days left to verify contact info." and I also see "Alert!" next to the petelancaster.com
+domain listing.
+
+Apparently I should have recieved and email about this, but in my case I haven't. 
+
+Here are the NameCheap instructions if you don't recieve the email.
+
+https://www.namecheap.com/support/knowledgebase/article.aspx/797/67/what-should-i-do-if-i-didnt-receive-the-approval-email
+
+I've done this and got the email (in junk email folder). Clicked on the link in the email
+and reached a namecheap.com page containing this message: 
+
+    Registrant email address successfully verified
+    Your site(s) will automatically (re)activate, usually within 24 - 48 hours.
+
+    petelancaster.com
+    You can see your Registrant email address by logging into your Namecheap Account 
+    and going to the Domain Management section. You can update this information at any time.
+    
+Going back into the dashboard within NameCheap, I can see that the "You have 15 days left to verify contact info."
+message has disappeared, and so has the "Alert" next to the petelancaster.com domain, so it looks like
+job done.
+
 ==================================================================================
 ==================================================================================
 
@@ -52,7 +76,43 @@ I did not purchase extra services like SG Site Scanner.
 
 Done. Hosting cost £86.26 for one year.
 
+iv) This is the message I see within SiteGround immediately after hosting purchase 
+complete: 
+
+Point Your Domain
+Please point your domain to the new host server. Your new DNS are:
+
+DNS THAT I'M NOT SURE I WANT TO STORE IN PUBLIC GITHUB FOLDER
+DNS THAT I'M NOT SURE I WANT TO STORE IN PUBLIC GITHUB FOLDER
+
+Essentially this is about pointing my petelancaster.com domain purchased via NameCheap 
+to the hosting purchased via SiteGround, so to implement you take the two DNS above 
+and go to NameCheap, and follow the instructions here.
+
+https://www.namecheap.com/support/knowledgebase/article.aspx/767/10/how-to-change-dns-for-a-domain/
+
+For cases like mine, where your domain name purchase was via NameCheap, but your hosting purchase
+was via somewhere other than NameCheap, this boils down to 
+
+  NameCheap/Domain List/NameServers/Custom DNS/ 
+  Then add in Nameserver 1 and Nameserver 2 in the space provided.
+  Then click on green checkmark to save.
+
 ==================================================================================
 ==================================================================================
+
+3) Setting up wordpress website.
+
+Within siteground dashboard, just selected "setup new website" (as opposed to importing existing), and selected "WordPress" 
+and set up login details (for WordPress, which are separate and distinct from SiteGround login).
+
+Steps as per this vid https://www.youtube.com/watch?v=SKyoKk9T4g4
+
+Wordpress has now been installed in the backend of your site by SiteGround. There is probably a more involved step-by-step
+way of doing this (if you feel compelled to do it the hard way).
+
+
+
+
 
 
